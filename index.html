@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Zyra Hub</title>
+<link rel="icon" href="https://www.google.com/favicon.ico">
+<style>
+/* === CORE VARIABLES & RESET === */
+:root {
+  --accent: #9b59ff;
+  --accent-light: #b366ff;
+  --bg-dark: #0f0018;
+  --glass-bg: rgba(20, 0, 31, 0.65);
+  --glass-border: rgba(155, 89, 255, 0.2);
+  --glow: 0 0 25px rgba(155, 89, 255, 0.6);
+  --text-main: #e6ccff;
+  --text-dim: #b39cd0;
+  --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-main);
+  background: var(--bg-dark);
+  color: var(--text-main);
+}
+
+body {
+  background: radial-gradient(circle at 50% 0%, #2b0033 0%, #000 100%);
+}
+
+/* === PARTICLES BACKGROUND === */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* === LOGIN SCREEN === */
+#login {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 50;
+  transition: opacity 0.5s ease;
+}
+
+.login-box {
+  background: var(--glass-bg);
+  padding: 40px;
+  width: 420px;
+  border-radius: 25px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glow);
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+.login-box h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, var(--accent), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-box p {
+  color: var(--text-dim);
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  padding-left: 5px;
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  color: white;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 15px rgba(155, 89, 255, 0.3);
+}
+
+.btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* === GLOBAL COMPONENTS === */
+.btn {
+  flex: 1;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent), #6a0dad);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(128, 0, 255, 0.3);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(155, 89, 255, 0.5);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn-outline:hover {
+  background: rgba(155, 89, 255, 0.1);
+}
+
+/* === MAIN OS LAYOUT === */
+#os {
+  display: none;
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: rgba(10, 0, 15, 0.8);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  z-index: 20;
+}
+
+.brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  background: linear-gradient(90deg, var(--accent), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.nav-item {
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.nav-item:hover, .nav-item.active {
+  background: linear-gradient(90deg, rgba(155, 89, 255, 0.2), transparent);
+  color: white;
+  border-left: 3px solid var(--accent);
+}
+
+.nav-item.logout {
+  margin-top: auto;
+  color: #ff6b6b;
+}
+
+.nav-item.logout:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: #ff6b6b;
+}
+
+/* === CONTENT AREA === */
+.content-area {
+  margin-left: 250px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 40px;
+  position: relative;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.user-welcome {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+section {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+section.active {
+  display: block;
+}
+
+/* === DASHBOARD GRID === */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 25px;
+  backdrop-filter: blur(5px);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(155, 89, 255, 0.2);
+  border-color: rgba(155, 89, 255, 0.4);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card-icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(155, 89, 255, 0.1);
+  border-radius: 12px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  background: rgba(155, 89, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.link-btn:hover {
+  background: var(--accent);
+  transform: scale(1.02);
+}
+
+/* === GAMES & MEDIA === */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.app-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+.app-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(155, 89, 255, 0.3);
+  border-color: var(--accent);
+}
+
+.app-card-content {
+  padding: 25px;
+}
+
+.app-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.app-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.launch-tag {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--accent), #6a0dad);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* === SETTINGS MODAL === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 25px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  box-shadow: var(--glow);
+  animation: scaleIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.setting-group {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.setting-group:last-child { border-bottom: none; margin-bottom: 0; }
+
+.setting-label {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  display: block;
+  color: white;
+}
+
+.setting-desc {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 15px;
+}
+
+.theme-options {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.theme-btn {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: rgba(0,0,0,0.3);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.theme-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+input[type="color"] {
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #333;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(26px); }
+
+/* === IFRAME MODAL === */
+#iframeContainer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 200;
+}
+
+#iframeContainer iframe { width: 100%; height: 100%; border: none; }
+#closeIframe {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: var(--accent);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 201;
+  border: none;
+  box-shadow: 0 0 15px rgba(155,89,255,0.5);
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- LOGIN SCREEN -->
+<div id="login">
+  <div class="login-box">
+    <h1>Zyra Hub</h1>
+    <p>Enter the next dimension</p>
+    <div class="input-group">
+      <label>Username</label>
+      <input id="lUser" type="text" placeholder="Enter username">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input id="lPass" type="password" placeholder="••••••••">
+    </div>
+    <div class="btn-group">
+      <button class="btn" onclick="login()">Login</button>
+      <button class="btn btn-outline" onclick="create()">Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN OS -->
+<div id="os">
+  <!-- Sidebar Nav -->
+  <div class="sidebar">
+    <div class="brand">Zyra Hub</div>
+    
+    <div class="nav-item active" onclick="openTab('home')">
+      <span>🏠</span> Home
+    </div>
+    <div class="nav-item" onclick="openTab('zyraai')">
+      <span>🤖</span> Zyra AI
+    </div>
+    <div class="nav-item" onclick="openTab('games')">
+      <span>🎮</span> Games
+    </div>
+    <div class="nav-item" onclick="openTab('media')">
+      <span>🎬</span> Media
+    </div>
+    
+    <div class="nav-item logout" onclick="logout()">
+      <span>🚪</span> Logout
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="user-welcome" id="welcome">Welcome</div>
+      <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    </div>
+
+    <!-- HOME SECTION -->
+    <section id="home" class="active">
+      <div class="grid-container">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🔋</div>
+            <div class="card-title">System Status</div>
+          </div>
+          <div class="card-value" id="percent">--%</div>
+          <div class="card-desc">Current Battery Level</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🕒</div>
+            <div class="card-title">Local Time</div>
+          </div>
+          <div class="card-value" id="time">--:--</div>
+          <div class="card-desc" id="date">Loading...</div>
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+          <div class="card-header">
+            <div class="card-icon">🔗</div>
+            <div class="card-title">Quick Links</div>
+          </div>
+          <div class="links-grid">
+            <a href="https://discord.gg/8G6Rw4NAHt" target="_blank" class="link-btn">
+              <span>💬</span> Join Discord
+            </a>
+            <a href="https://forms.gle/jrvFsCAzr2qLMyKSA" target="_blank" class="link-btn">
+              <span>✨</span> Submit Request
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZYRA AI -->
+    <section id="zyraai">
+      <div style="text-align: center; padding-top: 50px;">
+        <h2 style="margin-bottom: 20px;">AI Integration Ready</h2>
+        <p style="color: var(--text-dim); margin-bottom: 40px;">Access the Zyra Intelligence network</p>
+        <button class="btn" style="padding: 20px 50px; font-size: 1.2rem;" onclick="window.open('https://zyragames-jj.github.io/ZyraGames.github.io/', '_blank')">
+          Launch Zyra AI
+        </button>
+      </div>
+    </section>
+
+    <!-- GAMES -->
+    <section id="games">
+      <h2 style="margin-bottom: 25px;">Game Launchpad</h2>
+      <p style="color: var(--text-dim); margin-bottom: 30px;">Note: External sources hosted in secure containers.</p>
+      
+      <div class="app-grid">
+        <div class="app-card" onclick="launchGenizy()">
+          <div class="app-card-content">
+            <h3>Genizy Math</h3>
+            <p>Advanced mathematics solver and learning platform with visual graphing capabilities.</p>
+            <span class="launch-tag">Launch Securely →</span>
+          </div>
+        </div>
+        
+        <a href="https://psecurly-by-void.bostoncareercounselor.com/g" target="_blank" class="app-card">
+          <div class="app-card-content">
+            <h3>Velara Games</h3>
+            <p>High-speed gaming portal with curated titles and optimized performance.</p>
+            <span class="launch-tag">Open Portal →</span>
+          </div>
+        </a>
+
+        <a href="https://quack-learn.web.app/" target="_blank" class="app-card">
+          <div class="app-card-content">
+            <h3>Duck Games</h3>
+            <p>Retro and casual gaming collection featuring browser-based emulators.</p>
+            <span class="launch-tag">Open Portal →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- MEDIA -->
+    <section id="media">
+      <h2 style="margin-bottom: 25px;">Streaming Hub</h2>
+      <div class="app-grid" style="max-width: 800px;">
+        <a href="https://yflix.to/home" target="_blank" class="app-card">
+          <div class="app-card-content">
+            <h3>YFlix</h3>
+            <p>Cinematic streaming database with high-quality metadata.</p>
+          </div>
+        </a>
+        <a href="https://arc018.to/" target="_blank" class="app-card">
+          <div class="app-card-content">
+            <h3>Arc018</h3>
+            <p>Media archive with extensive library categorization.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">System Settings</h2>
+      <button class="close-modal" onclick="closeSettings()">✕</button>
+    </div>
+
+    <!-- Theme Section -->
+    <div class="setting-group">
+      <label class="setting-label">Visual Theme</label>
+      <div class="setting-desc">Select a preset or customize your own colors.</div>
+      <div class="theme-options">
+        <button class="theme-btn active" onclick="setTheme('default')">Cyberpunk</button>
+        <button class="theme-btn" onclick="setTheme('crimson')">Crimson</button>
+        <button class="theme-btn" onclick="setTheme('ocean')">Ocean</button>
+        <button class="theme-btn" onclick="setTheme('forest')">Forest</button>
+        <button class="theme-btn" onclick="setTheme('custom')">Custom</button>
+      </div>
+      
+      <div id="customColorPicker" style="display: none; margin-top: 15px;">
+        <label class="setting-desc">Accent Color</label>
+        <div class="color-picker-wrapper">
+          <input type="color" id="customAccent" value="#9b59ff" onchange="updateCustomTheme(this.value)">
+          <span id="colorHex">#9b59ff</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Particles Section -->
+    <div class="setting-group">
+      <label class="setting-label">Particles Background</label>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="setting-desc">Toggle animated background effects (may improve performance on low-end devices)</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="particlesToggle" checked onchange="toggleParticles(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Tab Cloak Section -->
+    <div class="setting-group">
+      <label class="setting-label">Stealth Mode (Tab Cloak)</label>
+      <div class="setting-desc">Disguise this tab as a standard school/work application.</div>
+      
+      <select id="cloakSelect" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 8px; margin-bottom: 15px;" onchange="applyCloak(this.value)">
+        <option value="">None (Zyra Hub)</option>
+        <option value="google">Google Search</option>
+        <option value="docs">Google Docs</option>
+        <option value="drive">Google Drive</option>
+        <option value="classroom">Google Classroom</option>
+        <option value="khan">Khan Academy</option>
+        <option value="ixl">IXL Learning</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- IFRAME CONTAINER FOR VOID (Removed as requested, kept container if needed but hidden) -->
+<div id="iframeContainer">
+  <button id="closeIframe" onclick="document.getElementById('iframeContainer').style.display='none'">Close Viewer</button>
+  <iframe src="about:blank"></iframe>
+</div>
+
+<script>
+// ===== USER MANAGEMENT =====
+let users = JSON.parse(localStorage.getItem("users") || "{}");
+let current = null;
+const loginScreen = document.getElementById("login");
+const osScreen = document.getElementById("os");
+const welcomeText = document.getElementById("welcome");
+
+// Admin Default
+if (!users.admin) {
+  users.admin = { pass: "zyraadmin", admin: true };
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+function create() {
+  const u = document.getElementById("lUser").value.trim();
+  const p = document.getElementById("lPass").value;
+  if (!u || !p) return alert("Please fill in all fields");
+  if (users[u]) return alert("Username already exists");
+  users[u] = { pass: p, admin: false };
+  localStorage.setItem("users", JSON.stringify(users));
+  // Auto login
+  current = u;
+  localStorage.setItem("current", u);
+  start();
+}
+
+function login() {
+  const u = document.getElementById("lUser").value.trim();
+  const p = document.getElementById("lPass").value;
+  if (users[u] && users[u].pass === p) {
+    current = u;
+    localStorage.setItem("current", u);
+    start();
+  } else {
+    alert("Invalid username or password");
+  }
+}
+
+function start() {
+  loginScreen.style.opacity = '0';
+  setTimeout(() => {
+    loginScreen.style.display = "none";
+    osScreen.style.display = "block";
+    welcomeText.textContent = `Welcome, ${current}`;
+    initDashboard();
+  }, 500);
+}
+
+function logout() {
+  localStorage.removeItem("current");
+  location.reload();
+}
+
+// Auto Login
+if (localStorage.getItem("current")) {
+  current = localStorage.getItem("current");
+  start();
+}
+
+// ===== NAVIGATION =====
+function openTab(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  // Find the nav item with this onclick and add active
+  document.querySelectorAll(".nav-item").forEach(n => {
+    if (n.getAttribute("onclick") === `openTab('${id}')`) n.classList.add("active");
+  });
+}
+
+// ===== DASHBOARD LOGIC =====
+function initDashboard() {
+  // Battery
+  function updateBattery(level) {
+    document.getElementById("percent").textContent = Math.round(level * 100) + "%";
+  }
+  if ('getBattery' in navigator) {
+    navigator.getBattery().then(b => {
+      updateBattery(b.level);
+      b.addEventListener("levelchange", () => updateBattery(b.level));
+    });
+  } else {
+    document.getElementById("percent").textContent = "N/A";
+  }
+
+  // Time
+  function updateTime() {
+    const now = new Date();
+    document.getElementById("time").textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    document.getElementById("date").textContent = now.toLocaleDateString(undefined, {weekday: 'long', month: 'long', day: 'numeric'});
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+}
+
+// ===== PARTICLES SYSTEM =====
+let particlesEnabled = true;
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function initParticles() {
+  particles = [...Array(80)].map(() => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    dx: (Math.random() - 0.5) * 0.5,
+    dy: (Math.random() - 0.5) * 0.5,
+    r: Math.random() * 2 + 1,
+    alpha: Math.random() * 0.5 + 0.1
+  }));
+}
+
+function animateParticles() {
+  if (!particlesEnabled) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  particles.forEach(p => {
+    p.x += p.dx;
+    p.y += p.dy;
+    
+    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    
+    ctx.fillStyle = `rgba(155, 89, 255, ${p.alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  
+  requestAnimationFrame(animateParticles);
+}
+
+initParticles();
+animateParticles();
+
+function toggleParticles(checkbox) {
+  particlesEnabled = checkbox.checked;
+  if (particlesEnabled) {
+    initParticles();
+    animateParticles();
+    canvas.style.display = 'block';
+  } else {
+    canvas.style.display = 'none';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+// ===== SETTINGS / MODAL =====
+function openSettings() {
+  document.getElementById("settingsModal").classList.add("active");
+}
+
+function closeSettings() {
+  document.getElementById("settingsModal").classList.remove("active");
+}
+
+// ===== THEMING =====
+const themes = {
+  default: { accent: '#9b59ff', bg: '#0f0018' },
+  crimson: { accent: '#ff2a6d', bg: '#1a0005' },
+  ocean: { accent: '#00d2ff', bg: '#001220' },
+  forest: { accent: '#0aff60', bg: '#001a0a' },
+  custom: { accent: '#9b59ff', bg: '#0f0018' }
+};
+
+function setTheme(themeName) {
+  const root = document.documentElement;
+  const theme = themes[themeName];
+  
+  // Update CSS Variables
+  root.style.setProperty('--accent', theme.accent);
+  root.style.setProperty('--glass-border', theme.accent + '33'); // 20% opacity
+  root.style.setProperty('--glow', `0 0 25px ${theme.accent}99`);
+  
+  // Handle Custom Picker
+  const picker = document.getElementById("customColorPicker");
+  if (themeName === 'custom') {
+    picker.style.display = 'block';
+    updateCustomTheme(document.getElementById("customAccent").value);
+  } else {
+    picker.style.display = 'none';
+  }
+  
+  // Update active button state
+  document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function updateCustomTheme(color) {
+  const root = document.documentElement;
+  root.style.setProperty('--accent', color);
+  root.style.setProperty('--glass-border', color + '33');
+  root.style.setProperty('--glow', `0 0 25px ${color}99`);
+  document.getElementById("colorHex").textContent = color;
+}
+
+// ===== TAB CLOAK =====
+const cloaks = {
+  google: { title: "Google", icon: "https://www.google.com/favicon.ico" },
+  docs: { title: "Google Docs", icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" },
+  drive: { title: "Google Drive", icon: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png" },
+  classroom: { title: "Google Classroom", icon: "https://ssl.gstatic.com/classroom/ic_product_classroom_32.png" },
+  khan: { title: "Khan Academy", icon: "https://cdn.kastatic.org/images/favicon.ico" },
+  ixl: { title: "IXL | Math, Language Arts, Science, Social Studies", icon: "https://www.ixl.com/favicon.ico" }
+};
+
+function applyCloak(type) {
+  if (!type) {
+    document.title = "Zyra Hub";
+    // Reset to default (hardcoded in HTML or reconstruct)
+    const link = document.querySelector("link[rel~='icon']");
+    if (link) link.href = "https://www.google.com/favicon.ico"; // Or your default
+    return;
+  }
+  
+  const cloak = cloaks[type];
+  document.title = cloak.title;
+  
+  let link = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+  link.href = cloak.icon;
+}
+
+// ===== GAME LAUNCHERS =====
+function launchGenizy() {
+  const win = window.open("about:blank", "_blank");
+  if (win) {
+    win.document.open();
+    win.document.write(`
+      <style>
+        body { margin: 0; background: #000; overflow: hidden; }
+        iframe { width: 100vw; height: 100vh; border: none; }
+      </style>
+      <iframe src="https://genizymath.github.io/"></iframe>
+    `);
+    win.document.close();
+  } else {
+    alert("Popup blocker detected. Please allow popups for this site.");
+  }
+}
+</script>
+</body>
+</html>
